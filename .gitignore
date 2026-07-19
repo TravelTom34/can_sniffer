@@ -1,0 +1,7 @@
+*.o
+*.hex
+*.elf
+*.bin
+build/
+.vscode/
+squashfs-root/

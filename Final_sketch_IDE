@@ -1,0 +1,13 @@
+/*
+ * ================================================================
+ * Freightliner M2 BHM CAN Sniffer — R4 + MCP2515/TJA1050
+ * FINAL BUILD — direct raw-SPI register access (no mcp_can library)
+ * ================================================================
+ * Validated: 250kbps, 8MHz crystal, confirmed against known-good
+ * Raspberry Pi 5 socketcan capture of the same BHM bus.
+ *
+ * Speaks SLCAN protocol over USB serial (115200 baud) — compatible
+ * with slcand (Linux SocketCAN bridge) and SavvyCan.
+ *
+ * Auto-opens the CAN channel at boot (streams immediately without
+ * waiting for an 'O' command)
