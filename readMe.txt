@@ -1,5 +1,9 @@
 # M2 BHM CAN Sniffer — Field Reference (R4 + MCP2515, Kali/Linux)
 
+
+!!!!!  Easy Way to Work with the tool is run the install.sh script, it does all this below for you.
+
+
 ## Every-session workflow (in order)
 
 ### 1. Check what device the R4 landed on
@@ -17,7 +21,8 @@ sudo fuser /dev/ttyACM0      # confirm free — swap in whatever ACM number is a
 # Be sure to release can0 inteface and bring it down so you can flash sketch to IDE
 
 ### 4. Attach the R4 as a real SocketCAN interface
-sudo slcand -o -c -s5 -S 115200 /dev/ttyACM0 can0   # swap ACM number as needed
+sudo slcand -o -c -s5 -S 115200 /dev/ttyACM0 can0  // 250kbps
+sudo slcand -o -c -s6 -S 115200 /dev/ttyACM0 can0  // 500kbps swap ACM number as needed
 sudo ip link set up can0
 
 ### 5. Verify it's alive

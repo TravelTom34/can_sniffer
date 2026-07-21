@@ -5,3 +5,4 @@
 build/
 .vscode/
 squashfs-root/
+git_acc_tok

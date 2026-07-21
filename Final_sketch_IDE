@@ -10,4 +10,202 @@
  * with slcand (Linux SocketCAN bridge) and SavvyCan.
  *
  * Auto-opens the CAN channel at boot (streams immediately without
- * waiting for an 'O' command)
+ * waiting for an 'O' command) — required to work around a Windows
+ * flow-control issue, harmless/redundant on Linux where slcand
+ * sends 'O' properly anyway.
+ * ================================================================
+ */
+
+#include <SPI.h>
+
+#define CAN_CS     10
+#define SPI_SPEED  1000000   // 1MHz - conservative, reliable on R4's Renesas SPI
+
+bool canOpen = true;   // auto-open at boot
+
+// ---------------- low-level SPI register access ----------------
+
+byte readReg(byte addr) {
+  SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+  digitalWrite(CAN_CS, LOW);
+  SPI.transfer(0x03); SPI.transfer(addr);
+  byte v = SPI.transfer(0x00);
+  digitalWrite(CAN_CS, HIGH);
+  SPI.endTransaction();
+  return v;
+}
+
+void writeReg(byte addr, byte val) {
+  SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+  digitalWrite(CAN_CS, LOW);
+  SPI.transfer(0x02); SPI.transfer(addr); SPI.transfer(val);
+  digitalWrite(CAN_CS, HIGH);
+  SPI.endTransaction();
+}
+
+void bitModify(byte addr, byte mask, byte val) {
+  SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+  digitalWrite(CAN_CS, LOW);
+  SPI.transfer(0x05); SPI.transfer(addr); SPI.transfer(mask); SPI.transfer(val);
+  digitalWrite(CAN_CS, HIGH);
+  SPI.endTransaction();
+}
+
+void mcpReset() {
+  SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+  digitalWrite(CAN_CS, LOW);
+  SPI.transfer(0xC0);   // RESET instruction
+  digitalWrite(CAN_CS, HIGH);
+  SPI.endTransaction();
+  delay(10);
+}
+
+// Read RX buffer n (0 or 1) via dedicated READ RX BUFFER instruction -
+// auto-clears the corresponding interrupt flag when CS releases.
+void readRxBuffer(byte n, byte *out13) {
+  SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+  digitalWrite(CAN_CS, LOW);
+  SPI.transfer(n == 0 ? 0x90 : 0x94);
+  for (byte i = 0; i < 13; i++) out13[i] = SPI.transfer(0x00);
+  digitalWrite(CAN_CS, HIGH);
+  SPI.endTransaction();
+}
+
+// ---------------- CAN controller init: 250kbps @ 8MHz crystal ----------------
+
+bool canInit() {
+  mcpReset();
+  if ((readReg(0x0E) >> 5) != 4) return false;   // must land in CONFIG mode
+
+  writeReg(0x2A, 0x00);  // CNF1
+  writeReg(0x29, 0xB1);  // CNF2
+  writeReg(0x28, 0x85);  // CNF3   -> 250kbps @ 8MHz, confirmed against Pi capture
+
+  writeReg(0x60, 0x64);  // RXB0CTRL: accept all frames, rollover into RXB1
+  writeReg(0x70, 0x60);  // RXB1CTRL: accept all frames
+  writeReg(0x2C, 0x00);  // clear CANINTF
+
+  writeReg(0x0F, 0x00);  // CANCTRL: NORMAL mode (ACKs on the bus)
+  delay(1);
+  return (readReg(0x0E) >> 5) == 0;
+}
+
+// ---------------- SLCAN frame output ----------------
+
+void emitFrame(byte *b) {
+  // b = SIDH SIDL EID8 EID0 DLC D0..D7
+  bool ext = b[1] & 0x08;
+  unsigned long id;
+  if (ext) {
+    id = ((unsigned long)((b[0] << 3) | (b[1] >> 5)) << 18)
+       | ((unsigned long)(b[1] & 0x03) << 16)
+       | ((unsigned long)b[2] << 8)
+       | b[3];
+  } else {
+    id = (b[0] << 3) | (b[1] >> 5);
+  }
+  byte dlc = b[4] & 0x0F;
+  if (dlc > 8) dlc = 8;
+
+  char buf[32];
+  if (ext) sprintf(buf, "T%08lX%d", id, dlc);
+  else     sprintf(buf, "t%03lX%d", id, dlc);
+  Serial.print(buf);
+  for (byte i = 0; i < dlc; i++) {
+    sprintf(buf, "%02X", b[5 + i]);
+    Serial.print(buf);
+  }
+  Serial.print("\r");
+}
+
+// ---------------- SLCAN transmit ----------------
+
+void txFrame(unsigned long id, bool ext, byte len, byte *data) {
+  while (readReg(0x30) & 0x08);   // wait for TXB0 TXREQ to clear
+  if (ext) {
+    writeReg(0x31, (id >> 21) & 0xFF);
+    writeReg(0x32, (((id >> 18) & 0x07) << 5) | 0x08 | ((id >> 16) & 0x03));
+    writeReg(0x33, (id >> 8) & 0xFF);
+    writeReg(0x34, id & 0xFF);
+  } else {
+    writeReg(0x31, (id >> 3) & 0xFF);
+    writeReg(0x32, (id & 0x07) << 5);
+    writeReg(0x33, 0); writeReg(0x34, 0);
+  }
+  writeReg(0x35, len);
+  for (byte i = 0; i < len; i++) writeReg(0x36 + i, data[i]);
+  SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+  digitalWrite(CAN_CS, LOW);
+  SPI.transfer(0x81);   // RTS TXB0
+  digitalWrite(CAN_CS, HIGH);
+  SPI.endTransaction();
+}
+
+// ---------------- SLCAN command handling ----------------
+
+void handleCommand(String cmd) {
+  if (cmd.length() == 0) { Serial.print("\r"); return; }
+  switch (cmd.charAt(0)) {
+    case 'O': canOpen = true;  Serial.print("\r"); break;
+    case 'C': canOpen = false; Serial.print("\r"); break;
+    case 'S': case 's': Serial.print("\r"); break;   // bitrate is hardcoded; just ACK
+    case 'V': Serial.print("V1013\r"); break;
+    case 'v': Serial.print("v1014\r"); break;
+    case 'N': Serial.print("NA123\r"); break;
+    case 'F': Serial.print("F00\r"); break;
+    case 'Z': case 'M': case 'm': Serial.print("\r"); break;
+    case 't': {
+      unsigned long id = strtoul(cmd.substring(1, 4).c_str(), NULL, 16);
+      byte len = cmd.substring(4, 5).toInt();
+      byte d[8];
+      for (byte i = 0; i < len; i++)
+        d[i] = strtoul(cmd.substring(5 + i*2, 7 + i*2).c_str(), NULL, 16);
+      txFrame(id, false, len, d);
+      Serial.print("z\r");
+      break;
+    }
+    case 'T': {
+      unsigned long id = strtoul(cmd.substring(1, 9).c_str(), NULL, 16);
+      byte len = cmd.substring(9, 10).toInt();
+      byte d[8];
+      for (byte i = 0; i < len; i++)
+        d[i] = strtoul(cmd.substring(10 + i*2, 12 + i*2).c_str(), NULL, 16);
+      txFrame(id, true, len, d);
+      Serial.print("Z\r");
+      break;
+    }
+    default: Serial.print("\r");
+  }
+}
+
+// ---------------- setup / loop ----------------
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(CAN_CS, OUTPUT);
+  digitalWrite(CAN_CS, HIGH);
+  SPI.begin();
+  while (!canInit()) delay(500);   // retry until the MCP2515 confirms NORMAL mode
+}
+
+void loop() {
+  static String cmdBuf = "";
+
+  while (Serial.available()) {
+    char c = Serial.read();
+    if (c == '\r') {
+      handleCommand(cmdBuf);
+      cmdBuf = "";
+    } else if (c != '\n') {
+      cmdBuf += c;
+    }
+  }
+
+  if (canOpen) {
+    byte intf = readReg(0x2C);
+    byte b[13];
+    if (intf & 0x01) { readRxBuffer(0, b); emitFrame(b); }
+    if (intf & 0x02) { readRxBuffer(1, b); emitFrame(b); }
+    if (readReg(0x2D) & 0xC0) bitModify(0x2D, 0xC0, 0x00);   // clear any overflow flags
+  }
+}
