@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J1939 29-bit ID :: bit trainer</title>
+<style>
+  :root{
+    --bg: #0b0f0d;
+    --panel: #111713;
+    --line: #22302a;
+    --amber: #ffb02e;
+    --green: #5be49b;
+    --green-dim: #2f6b52;
+    --red: #ff5d5d;
+    --text: #d7e4dc;
+    --text-dim: #7c9187;
+    --mono: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--mono);
+    padding:16px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .scan{
+    position:fixed; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+    z-index:1;
+  }
+  header{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:16px;
+  }
+  h1{
+    font-size:15px; letter-spacing:2px; text-transform:uppercase; color:var(--amber);
+    margin:0; font-weight:600;
+  }
+  .sub{ color:var(--text-dim); font-size:11px; }
+
+  .frame-id{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:14px; margin-bottom:14px; text-align:center;
+  }
+  .frame-id .label{ font-size:10px; color:var(--text-dim); letter-spacing:2px; text-transform:uppercase;}
+  .frame-id .hex{ font-size:32px; color:var(--green); font-weight:700; letter-spacing:1px; margin:4px 0;}
+  .frame-id .bin{ font-size:11px; color:var(--text-dim); word-break:break-all; }
+
+  .bitgrid{ display:flex; flex-direction:column; gap:2px; margin-bottom:16px; }
+  .field-row{ display:flex; align-items:stretch; gap:2px; }
+  .field-meta{
+    width:64px; flex-shrink:0; display:flex; flex-direction:column; justify-content:center;
+    font-size:9px; color:var(--text-dim); letter-spacing:0.5px; padding-right:4px;
+  }
+  .field-meta b{ display:block; font-size:10px; color:var(--text); }
+  .bits{ display:flex; gap:2px; flex:1; }
+  .bit{
+    flex:1; aspect-ratio:1; border-radius:3px; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700; cursor:pointer; user-select:none;
+    background:#151b17; color:var(--text-dim); transition:background .1s, color .1s;
+    min-width:0;
+  }
+  .bit.on{ background:var(--green-dim); color:#0b0f0d; border-color:var(--green); }
+  .bit:active{ transform:scale(0.94); }
+  .bitnum{ font-size:7px; color:var(--text-dim); text-align:center; margin-top:1px; }
+  .bitnums{ display:flex; gap:2px; }
+  .bitnums span{ flex:1; text-align:center; }
+
+  .fields{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;
+  }
+  .fcard{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:8px 10px;
+  }
+  .fcard .k{ font-size:9px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; }
+  .fcard .v{ font-size:15px; color:var(--amber); font-weight:700; }
+  .fcard .d{ font-size:10px; color:var(--text-dim); margin-top:2px; line-height:1.4; }
+
+  .pdumode{
+    background:var(--panel); border:1px solid var(--green-dim); border-radius:4px;
+    padding:10px; margin-bottom:14px; font-size:11px; line-height:1.6;
+  }
+  .pdumode .tag{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:1px;
+    padding:2px 6px; border-radius:3px; background:var(--green-dim); color:#0b0f0d; margin-right:6px;
+  }
+
+  .presets{ margin-bottom:16px; }
+  .presets .row{ display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; }
+  .presets button{
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    font-family:var(--mono); font-size:10px; padding:8px 10px; border-radius:4px;
+    white-space:nowrap; cursor:pointer;
+  }
+  .presets button:active{ background:var(--green-dim); color:#0b0f0d; }
+
+  .modebar{ display:flex; gap:6px; margin-bottom:14px; }
+  .modebar button{
+    flex:1; background:var(--panel); border:1px solid var(--line); color:var(--text-dim);
+    font-family:var(--mono); font-size:11px; padding:10px; border-radius:4px; cursor:pointer; letter-spacing:1px;
+  }
+  .modebar button.active{ background:var(--green-dim); color:#0b0f0d; border-color:var(--green); font-weight:700; }
+
+  .quiz{ background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:14px; display:none; }
+  .quiz.show{ display:block; }
+  .quiz .q{ font-size:13px; margin-bottom:10px; color:var(--text); }
+  .quiz .target{ color:var(--green); font-weight:700; }
+  .quiz input{
+    background:#0b0f0d; border:1px solid var(--line); color:var(--text);
+    font-family:var(--mono); font-size:14px; padding:8px; border-radius:4px; width:100%;
+    margin-bottom:10px;
+  }
+  .quiz .btnrow{ display:flex; gap:8px; }
+  .quiz button.act{
+    flex:1; background:var(--amber); color:#0b0f0d; border:none; font-family:var(--mono);
+    font-weight:700; padding:10px; border-radius:4px; cursor:pointer; font-size:11px; letter-spacing:1px;
+  }
+  .quiz .fb{ margin-top:10px; font-size:12px; min-height:18px; }
+  .fb.correct{ color:var(--green); }
+  .fb.wrong{ color:var(--red); }
+
+  .legend{ font-size:10px; color:var(--text-dim); text-align:center; margin-top:6px; }
+  footer{ margin-top:20px; font-size:9px; color:var(--text-dim); text-align:center; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="scan"></div>
+
+<header>
+  <h1>J1939 // 29-bit ID</h1>
+  <div class="sub" id="modeIndicator">EXPLORE</div>
+</header>
+
+<div class="modebar">
+  <button class="active" id="btnExplore">EXPLORE</button>
+  <button id="btnQuizDecode">QUIZ: DECODE</button>
+  <button id="btnQuizBuild">QUIZ: BUILD</button>
+</div>
+
+<div class="frame-id">
+  <div class="label">extended can id</div>
+  <div class="hex" id="hexOut">0x00000000</div>
+  <div class="bin" id="binOut">0 000 0 0 00000000 00000000 00000000</div>
+</div>
+
+<div class="bitgrid" id="bitgrid"></div>
+
+<div class="fields" id="fieldsOut"></div>
+
+<div class="pdumode" id="pduOut"></div>
+
+<div class="presets">
+  <div class="sub" style="margin-bottom:6px;">LOAD REAL PGN</div>
+  <div class="row" id="presetRow"></div>
+</div>
+
+<div class="quiz" id="quizPanel">
+  <div class="q" id="quizQ"></div>
+  <input id="quizInput" placeholder="type answer" autocomplete="off" />
+  <div class="btnrow">
+    <button class="act" id="quizCheck">CHECK</button>
+    <button class="act" id="quizNext" style="background:var(--green);">NEXT</button>
+  </div>
+  <div class="fb" id="quizFb"></div>
+</div>
+
+<div class="legend">tap bits to toggle · fields update live</div>
+<footer>SAE J1939-21 · 29-BIT EXTENDED CAN ID</footer>
+
+<script>
+// ---- Field definitions: [name, bitWidth, msb-first bit start (28 = MSB)] ----
+const FIELDS = [
+  { key:'P',   label:'Priority',  desc:'Arbitration priority. 0 = highest urgency, 7 = lowest. Lower wins the bus.', width:3, start:28 },
+  { key:'EDP', label:'EDP',       desc:'Extended Data Page. Almost always 0 in J1939. With DP, selects one of 4 PDU pages.', width:1, start:25 },
+  { key:'DP',  label:'Data Page', desc:'Data Page bit. Works with EDP to pick the PGN page (0 = normal J1939 page).', width:1, start:24 },
+  { key:'PF',  label:'PDU Format',desc:'PF < 240 (0xF0): PDU1, peer-to-peer, PS = destination address.\nPF ≥ 240: PDU2, broadcast, PS = group extension.', width:8, start:16 },
+  { key:'PS',  label:'PDU Specific', desc:'Meaning depends on PF: destination address (PDU1) or group extension (PDU2, broadcast).', width:8, start:8 },
+  { key:'SA',  label:'Source Addr', desc:'The ECU sending this frame. e.g. 0x00 = Engine #1, 0x03 = Transmission #1.', width:8, start:0 },
+];
+
+const TOTAL_BITS = 29;
+let bits = new Array(TOTAL_BITS).fill(0); // index 0 = LSB (bit0) ... index 28 = MSB (bit28)
+
+// Default: EEC1 (Electronic Engine Controller 1) broadcast from engine, priority 3
+function setFromValues(priority, edp, dp, pf, ps, sa){
+  const setRange = (val, width, startBit) => {
+    for(let i=0;i<width;i++){
+      bits[startBit + i] = (val >> (width-1-i)) & 1;
+    }
+  };
+  setRange(priority,3,26);
+  bits[25] = edp;
+  bits[24] = dp;
+  setRange(pf,8,16);
+  setRange(ps,8,8);
+  setRange(sa,8,0);
+}
+
+// EEC1: PGN 61444 (0xF004) -> DP=0 PF=0xF0 PS=0x04, priority 3, SA=0x00
+setFromValues(3,0,0,0xF0,0x04,0x00);
+
+const KNOWN_PGNS = {
+  61444: {name:'EEC1', desc:'Engine speed, torque'},
+  61443: {name:'EEC2', desc:'Accelerator pedal, load'},
+  61442: {name:'ETC1', desc:'Trans current gear, output shaft speed'},
+  65272: {name:'ETC2', desc:'Trans selected/target gear'},
+  65262: {name:'ET1',  desc:'Engine coolant/oil temps'},
+  65263: {name:'EFL/P1',desc:'Fuel/oil pressure'},
+  65266: {name:'LFE',  desc:'Fuel economy, fuel rate'},
+  65226: {name:'DM1',  desc:'Active diagnostic trouble codes'},
+  60928: {name:'AC',   desc:'Address claimed (name broadcast)'},
+  59392: {name:'ACK',  desc:'Acknowledgment'},
+};
+
+const PRESETS = [
+  {label:'EEC1 (Engine)', p:3, edp:0, dp:0, pf:0xF0, ps:0x04, sa:0x00},
+  {label:'ETC1 (Trans)',  p:3, edp:0, dp:0, pf:0xF0, ps:0x02, sa:0x03},
+  {label:'DM1 (Faults)',  p:6, edp:0, dp:0, pf:0xFE, ps:0xCA, sa:0x00},
+  {label:'AC (Addr Claim)', p:6, edp:0, dp:0, pf:0xEE, ps:0x00, sa:0x00},
+  {label:'Request (PDU1)', p:6, edp:0, dp:0, pf:0xEA, ps:0x00, sa:0xF9},
+  {label:'All zero', p:0, edp:0, dp:0, pf:0x00, ps:0x00, sa:0x00},
+];
+
+const bitgridEl = document.getElementById('bitgrid');
+const hexOutEl = document.getElementById('hexOut');
+const binOutEl = document.getElementById('binOut');
+const fieldsOutEl = document.getElementById('fieldsOut');
+const pduOutEl = document.getElementById('pduOut');
+const presetRowEl = document.getElementById('presetRow');
+
+function buildGrid(){
+  bitgridEl.innerHTML = '';
+  FIELDS.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+
+    const meta = document.createElement('div');
+    meta.className = 'field-meta';
+    meta.innerHTML = `<b>${f.label}</b>${f.width} bit${f.width>1?'s':''}`;
+    row.appendChild(meta);
+
+    const bitsWrap = document.createElement('div');
+    bitsWrap.className = 'bits';
+    for(let i=0;i<f.width;i++){
+      const bitIndex = f.start + (f.width-1-i); // MSB first display
+      const cell = document.createElement('div');
+      cell.className = 'bit';
+      cell.dataset.bitIndex = bitIndex;
+      cell.textContent = bits[bitIndex];
+      cell.addEventListener('click', () => {
+        bits[bitIndex] = bits[bitIndex] ? 0 : 1;
+        render();
+      });
+      bitsWrap.appendChild(cell);
+    }
+    row.appendChild(bitsWrap);
+    bitgridEl.appendChild(row);
+  });
+}
+
+function getFieldValue(f){
+  let v = 0;
+  for(let i=0;i<f.width;i++){
+    v = (v << 1) | bits[f.start + f.width - 1 - i];
+  }
+  return v;
+}
+
+function computeAll(){
+  const vals = {};
+  FIELDS.forEach(f => vals[f.key] = getFieldValue(f));
+  const canId = (vals.P << 26) | (vals.EDP << 25) | (vals.DP << 24) | (vals.PF << 16) | (vals.PS << 8) | vals.SA;
+  const isPDU1 = vals.PF < 240;
+  let pgn;
+  if(isPDU1){
+    // PS (destination) is not part of PGN for PDU1 — treated as 0
+    pgn = (vals.EDP << 17) | (vals.DP << 16) | (vals.PF << 8);
+  } else {
+    pgn = (vals.EDP << 17) | (vals.DP << 16) | (vals.PF << 8) | vals.PS;
+  }
+  return { vals, canId, isPDU1, pgn };
+}
+
+function render(){
+  // update bit cell visuals
+  document.querySelectorAll('.bit').forEach(cell => {
+    const idx = parseInt(cell.dataset.bitIndex);
+    cell.textContent = bits[idx];
+    cell.classList.toggle('on', bits[idx] === 1);
+  });
+
+  const { vals, canId, isPDU1, pgn } = computeAll();
+
+  hexOutEl.textContent = '0x' + canId.toString(16).toUpperCase().padStart(8,'0');
+  const binStr = [
+    vals.P.toString(2).padStart(3,'0'),
+    vals.EDP,
+    vals.DP,
+    vals.PF.toString(2).padStart(8,'0'),
+    vals.PS.toString(2).padStart(8,'0'),
+    vals.SA.toString(2).padStart(8,'0'),
+  ].join(' ');
+  binOutEl.textContent = binStr;
+
+  fieldsOutEl.innerHTML = '';
+  FIELDS.forEach(f => {
+    const val = vals[f.key];
+    const card = document.createElement('div');
+    card.className = 'fcard';
+    card.innerHTML = `<div class="k">${f.label}</div>
+      <div class="v">${val} <span style="font-size:11px;color:var(--text-dim);">(0x${val.toString(16).toUpperCase().padStart(f.width>4?2:1,'0')})</span></div>
+      <div class="d">${f.desc.replace(/\n/g,'<br>')}</div>`;
+    fieldsOutEl.appendChild(card);
+  });
+
+  const known = KNOWN_PGNS[pgn];
+  const tag = isPDU1 ? 'PDU1 · PEER-TO-PEER' : 'PDU2 · BROADCAST';
+  pduOutEl.innerHTML = `
+    <span class="tag">${tag}</span>
+    PGN = <b style="color:var(--green)">${pgn}</b> (0x${pgn.toString(16).toUpperCase().padStart(5,'0')})
+    ${known ? `— <b style="color:var(--amber)">${known.name}</b>: ${known.desc}` : '— not in local reference table'}
+    <br><span style="color:var(--text-dim);">
+    ${isPDU1
+      ? 'PF is below 240, so PS is read as a specific destination address — this frame targets one ECU.'
+      : 'PF is 240 or above, so PS becomes a group extension and folds into the PGN — this frame is broadcast to everyone.'}
+    </span>`;
+}
+
+function buildPresets(){
+  presetRowEl.innerHTML = '';
+  PRESETS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.textContent = p.label;
+    btn.addEventListener('click', () => {
+      setFromValues(p.p, p.edp, p.dp, p.pf, p.ps, p.sa);
+      render();
+    });
+    presetRowEl.appendChild(btn);
+  });
+}
+
+buildGrid();
+buildPresets();
+render();
+
+// ---------------- Modes ----------------
+const btnExplore = document.getElementById('btnExplore');
+const btnQuizDecode = document.getElementById('btnQuizDecode');
+const btnQuizBuild = document.getElementById('btnQuizBuild');
+const modeIndicator = document.getElementById('modeIndicator');
+const quizPanel = document.getElementById('quizPanel');
+const quizQ = document.getElementById('quizQ');
+const quizInput = document.getElementById('quizInput');
+const quizFb = document.getElementById('quizFb');
+
+let currentMode = 'explore';
+let currentQuiz = null;
+
+function setMode(m){
+  currentMode = m;
+  [btnExplore, btnQuizDecode, btnQuizBuild].forEach(b => b.classList.remove('active'));
+  if(m==='explore'){ btnExplore.classList.add('active'); modeIndicator.textContent = 'EXPLORE'; quizPanel.classList.remove('show'); }
+  if(m==='decode'){ btnQuizDecode.classList.add('active'); modeIndicator.textContent = 'QUIZ: DECODE'; quizPanel.classList.add('show'); newDecodeQuiz(); }
+  if(m==='build'){ btnQuizBuild.classList.add('active'); modeIndicator.textContent = 'QUIZ: BUILD'; quizPanel.classList.add('show'); newBuildQuiz(); }
+}
+
+btnExplore.addEventListener('click', () => setMode('explore'));
+btnQuizDecode.addEventListener('click', () => setMode('decode'));
+btnQuizBuild.addEventListener('click', () => setMode('build'));
+
+function randBits(n){ return Math.floor(Math.random() * (2**n)); }
+
+function randomFrame(){
+  const p = randBits(3);
+  const edp = 0;
+  const dp = Math.random() < 0.15 ? 1 : 0;
+  // bias toward realistic PF values
+  const isPDU1 = Math.random() < 0.4;
+  const pf = isPDU1 ? randBits(8) % 240 : 240 + randBits(4);
+  const ps = randBits(8);
+  const sa = randBits(8);
+  return {p, edp, dp, pf, ps, sa};
+}
+
+function newDecodeQuiz(){
+  const f = randomFrame();
+  const canId = (f.p<<26)|(f.edp<<25)|(f.dp<<24)|(f.pf<<16)|(f.ps<<8)|f.sa;
+  const targetField = FIELDS[Math.floor(Math.random()*FIELDS.length)];
+  currentQuiz = { type:'decode', frame:f, canId, targetField };
+  quizQ.innerHTML = `Given CAN ID <span class="target">0x${canId.toString(16).toUpperCase().padStart(8,'0')}</span>, what is the <b>${targetField.label}</b> field value? (enter decimal or 0x hex)`;
+  quizInput.value = '';
+  quizFb.textContent = '';
+  quizFb.className = 'fb';
+}
+
+function newBuildQuiz(){
+  const f = randomFrame();
+  const canId = (f.p<<26)|(f.edp<<25)|(f.dp<<24)|(f.pf<<16)|(f.ps<<8)|f.sa;
+  currentQuiz = { type:'build', frame:f, canId };
+  quizQ.innerHTML = `Priority=<b>${f.p}</b>, DP=<b>${f.dp}</b>, PF=<b>0x${f.pf.toString(16).toUpperCase()}</b>, PS=<b>0x${f.ps.toString(16).toUpperCase()}</b>, SA=<b>0x${f.sa.toString(16).toUpperCase()}</b>.<br>Build the full 29-bit CAN ID (hex, e.g. 0x1CF00400).`;
+  quizInput.value = '';
+  quizFb.textContent = '';
+  quizFb.className = 'fb';
+}
+
+function parseNum(str){
+  str = str.trim();
+  if(str.toLowerCase().startsWith('0x')) return parseInt(str,16);
+  return parseInt(str,10);
+}
+
+document.getElementById('quizCheck').addEventListener('click', () => {
+  if(!currentQuiz) return;
+  const userVal = parseNum(quizInput.value);
+  let correct, correctVal;
+  if(currentQuiz.type === 'decode'){
+    const f = currentQuiz.frame;
+    const map = {P:f.p, EDP:f.edp, DP:f.dp, PF:f.pf, PS:f.ps, SA:f.sa};
+    correctVal = map[currentQuiz.targetField.key];
+    correct = userVal === correctVal;
+  } else {
+    correctVal = currentQuiz.canId;
+    correct = userVal === correctVal;
+  }
+  if(correct){
+    quizFb.textContent = 'Correct.';
+    quizFb.className = 'fb correct';
+  } else {
+    quizFb.innerHTML = `Not quite — correct answer: <b>${correctVal}</b> (0x${correctVal.toString(16).toUpperCase()})`;
+    quizFb.className = 'fb wrong';
+  }
+  // load the quiz frame into the explorer bits underneath so they can look at it
+  setFromValues(currentQuiz.frame.p, currentQuiz.frame.edp, currentQuiz.frame.dp, currentQuiz.frame.pf, currentQuiz.frame.ps, currentQuiz.frame.sa);
+  render();
+});
+
+document.getElementById('quizNext').addEventListener('click', () => {
+  if(currentMode === 'decode') newDecodeQuiz();
+  if(currentMode === 'build') newBuildQuiz();
+});
+
+quizInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') document.getElementById('quizCheck').click();
+});
+</script>
+</body>
+</html>
