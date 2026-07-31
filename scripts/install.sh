@@ -1,14 +1,15 @@
 #!/bin/bash
 # ============================================================
-# start_can_sniffer.sh
+# start_can_sniffer.sh — v2
 # Plug in the R4/MCP2515 sniffer, run this script, go.
-# Tears down any stale session, lets you pick a bitrate,
-# attaches can0, and drops you into candump.
+# As of firmware v2, the bitrate you pick here ACTUALLY
+# reconfigures the MCP2515's bit timing registers (fixed in
+# v1, which silently ignored this and stayed hardcoded at 250k).
 # ============================================================
 
 set -e
 
-echo "=== M2 BHM CAN Sniffer Startup ==="
+echo "=== CAN Sniffer Startup (firmware v2 - dynamic bitrate) ==="
 echo ""
 
 # ---------- 1. Clean up any leftover session ----------
@@ -24,7 +25,6 @@ if [ -e /dev/ttyACM_R4 ]; then
     DEVICE="/dev/ttyACM_R4"
     echo "  Found fixed udev symlink: $DEVICE"
 else
-    # fall back to scanning for ttyACM* devices
     ACM_DEVICES=(/dev/ttyACM*)
     if [ ! -e "${ACM_DEVICES[0]}" ]; then
         echo "  ERROR: No /dev/ttyACM* device found. Is the R4 plugged in?"
@@ -45,8 +45,8 @@ fi
 echo ""
 echo "[3/5] Select CAN bus bitrate:"
 echo "  1) 125 kbps"
-echo "  2) 250 kbps  (BHM body/cab bus)"
-echo "  3) 500 kbps  (J1939 engine/chassis bus)"
+echo "  2) 250 kbps  (BHM body/cab bus - bench)"
+echo "  3) 500 kbps  (Freightliner 9-pin DLC, engine/chassis backbone)"
 echo "  4) 1000 kbps"
 echo ""
 read -p "Enter choice [1-4]: " CHOICE
@@ -61,10 +61,9 @@ esac
 
 echo "  Selected: $SPEED_LABEL ($SPEED_FLAG)"
 echo ""
-echo "  NOTE: this flag only affects the slcand handshake. The R4's actual"
-echo "  bit timing is hardcoded in firmware (CNF1/CNF2/CNF3). If you're"
-echo "  switching buses, make sure the firmware currently flashed matches"
-echo "  the speed you just selected, or reflash first."
+echo "  As of firmware v2, this reconfigures the MCP2515's actual bit timing"
+echo "  registers (CNF1/CNF2/CNF3) via the SLCAN 'S' command slcand sends"
+echo "  during connect — no reflash needed to switch buses."
 echo ""
 
 # ---------- 4. Attach as SocketCAN interface ----------

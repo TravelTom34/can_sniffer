@@ -1,0 +1,350 @@
+VERSION "can_sniffer master DBC v1.1 - merged j1939_reference (backbone SA 00) + econic_psm_bodybuilder (PSM SA EB / body SA C9)"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ECU PSM BODY TCM Vector__XXX
+
+\n
+\n\n\n\n
+
+/* ================================================================
+   SECTION 1 - J1939 BACKBONE  (standard SA 00 assumed)
+   These match frames on the vehicle powertrain backbone (9-pin DLC)
+   SA 00 = engine/CPC, 01 = CPC secondary, 03 = Allison TCM
+   ================================================================ */
+
+BO_ 2364539904 EEC1: 8 ECU
+ SG_ EngineTorqueMode : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ DriversDemandPercentTorque : 8|8@1- (1,-125) [-125|125] "%" Vector__XXX
+ SG_ ActualEnginePercentTorque : 16|8@1- (1,-125) [-125|125] "%" Vector__XXX
+ SG_ EngineSpeed : 24|16@1+ (0.125,0) [0|8031.875] "rpm" Vector__XXX
+ SG_ SourceAddressOfCtrlDevice : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2364539648 EEC2: 8 ECU
+ SG_ AcceleratorPedalPos1 : 8|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+ SG_ EngineLoadAtCurrentSpeed : 16|8@1+ (1,0) [0|250] "%" Vector__XXX
+ SG_ AcceleratorPedalPos2 : 32|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 2566840064 EEC3: 8 ECU
+ SG_ NominalFrictionPercentTorque : 0|8@1- (1,-125) [-125|125] "%" Vector__XXX
+ SG_ EstimatedEngineParasiticLoss : 8|8@1- (1,-125) [-125|125] "%" Vector__XXX
+ SG_ EngDesiredOperatingSpeed : 16|16@1+ (0.125,0) [0|8031.875] "rpm" Vector__XXX
+ SG_ EngDesiredOperatingSpdAsym : 32|8@1+ (0.125,0) [0|31.875] "%" Vector__XXX
+
+BO_ 2566843904 ET1: 8 ECU
+ SG_ EngineCoolantTemp : 0|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+ SG_ FuelTemp : 8|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+ SG_ EngineOilTemp1 : 16|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+ SG_ TurboOilTemp : 32|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+ SG_ EngineIntercoolerTemp : 48|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+
+BO_ 2566844160 EFLP1: 8 ECU
+ SG_ FuelDeliveryPressure : 0|8@1+ (4,0) [0|1000] "kPa" Vector__XXX
+ SG_ ExtCrankcaseBlowByPressure : 8|8@1+ (0.5,0) [0|125] "kPa" Vector__XXX
+ SG_ EngineOilLevel : 16|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+ SG_ EngineOilPressure : 24|8@1+ (4,0) [0|1000] "kPa" Vector__XXX
+ SG_ EngineCrankcasePressure : 32|16@1- (0.0078125,-250) [-250|251] "kPa" Vector__XXX
+ SG_ EngineCoolantPressure : 48|8@1+ (2,0) [0|500] "kPa" Vector__XXX
+ SG_ EngineCoolantLevel : 56|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 2566844928 LFE: 8 ECU
+ SG_ EngineFuelRate : 0|16@1+ (0.05,0) [0|3212.75] "L/h" Vector__XXX
+ SG_ EngineInstantaneousFuelEconomy : 16|16@1+ (0.001953125,0) [0|125.5] "km/L" Vector__XXX
+ SG_ EngineAvgFuelEconomy : 32|16@1+ (0.001953125,0) [0|125.5] "km/L" Vector__XXX
+ SG_ EngineThrottleValve1Pos : 48|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 2566841600 EngineHoursRevolutions: 8 ECU
+ SG_ EngineTotalHoursOfOperation : 0|32@1+ (0.05,0) [0|210554060.75] "hr" Vector__XXX
+ SG_ EngineTotalRevolutions : 32|32@1+ (1000,0) [0|4211081215000] "r" Vector__XXX
+
+BO_ 2566846720 LFC: 8 ECU
+ SG_ EngineTripFuel : 0|32@1+ (0.5,0) [0|2105540607.5] "L" Vector__XXX
+ SG_ EngineTotalFuelUsed : 32|32@1+ (0.5,0) [0|2105540607.5] "L" Vector__XXX
+
+BO_ 2566845696 AMB: 8 ECU
+ SG_ BarometricPressure : 0|8@1+ (0.5,0) [0|125] "kPa" Vector__XXX
+ SG_ CabInteriorTemp : 8|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+ SG_ AmbientAirTemp : 24|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+ SG_ AirInletTemp : 40|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+ SG_ RoadSurfaceTemp : 48|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+
+BO_ 2566845952 IC1: 8 ECU
+ SG_ BoostPressure : 8|8@1+ (2,0) [0|500] "kPa" Vector__XXX
+ SG_ IntakeManifoldTemp : 16|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+ SG_ AirInletPressure : 24|8@1+ (2,0) [0|500] "kPa" Vector__XXX
+ SG_ AirFilterDiffPressure : 32|8@1+ (0.05,0) [0|12.5] "kPa" Vector__XXX
+ SG_ ExhaustGasTemp : 40|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+ SG_ CoolantFilterDiffPressure : 56|8@1+ (0.5,0) [0|125] "kPa" Vector__XXX
+
+BO_ 2566846208 VEP1: 8 ECU
+ SG_ NetBatteryCurrent : 0|8@1- (1,-125) [-125|125] "A" Vector__XXX
+ SG_ AlternatorCurrent : 8|8@1+ (1,0) [0|250] "A" Vector__XXX
+ SG_ ChargingSystemPotential : 16|16@1+ (0.05,0) [0|3212.75] "V" Vector__XXX
+ SG_ BatteryPotentialSwitched : 32|16@1+ (0.05,0) [0|3212.75] "V" Vector__XXX
+
+BO_ 2364540160 ETC1: 8 ECU
+ SG_ TransDrivelineEngaged : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ TransCurrentGear : 24|8@1- (1,-125) [-125|125] "" Vector__XXX
+ SG_ TransSelectedGear : 56|8@1- (1,-125) [-125|125] "" Vector__XXX
+
+BO_ 2566846464 ETC2: 8 ECU
+ SG_ TransActualGearRatio : 0|16@1+ (0.001,0) [0|64.255] "" Vector__XXX
+ SG_ TransCurrentRange : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ TransRequestedRange : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ TransOutputShaftSpeed : 32|16@1+ (0.125,0) [0|8031.875] "rpm" Vector__XXX
+
+BO_ 2566844672 CCVS: 8 ECU
+ SG_ WheelBasedVehicleSpeed : 8|16@1+ (0.00390625,0) [0|250.996] "km/h" Vector__XXX
+ SG_ CruiseControlSetSpeed : 32|8@1+ (1,0) [0|250] "km/h" Vector__XXX
+ SG_ ParkingBrakeSwitch : 55|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 2565865728 EBC1: 8 ECU
+ SG_ ABSActive : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ASRBrakeControlActive : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ASREngineControlActive : 4|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ BrakePedalPosition : 8|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+ SG_ ABSOffroadSwitch : 16|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ABSWarningLamp : 24|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 2566831872 EBC2: 8 ECU
+ SG_ FrontAxleSpeed : 0|16@1+ (0.00390625,0) [0|250.996] "km/h" Vector__XXX
+ SG_ RelSpeedFrontAxleRight : 16|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+ SG_ RelSpeedFrontAxleLeft : 24|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+ SG_ RelSpeedRearAxle1Right : 32|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+ SG_ RelSpeedRearAxle1Left : 40|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+
+BO_ 2566847488 DD: 8 ECU
+ SG_ WasherFluidLevel : 48|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+ SG_ FuelLevel1 : 56|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 2566841856 TimeDate: 8 ECU
+ SG_ Seconds : 0|8@1+ (0.25,0) [0|62.75] "s" Vector__XXX
+ SG_ Minutes : 8|8@1+ (1,0) [0|60] "min" Vector__XXX
+ SG_ Hours : 16|8@1+ (1,0) [0|23] "hr" Vector__XXX
+ SG_ Month : 24|8@1+ (1,0) [1|12] "" Vector__XXX
+ SG_ Day : 32|8@1+ (0.25,0) [0|63.75] "" Vector__XXX
+ SG_ Year : 40|8@1+ (1,1985) [1985|2235] "" Vector__XXX
+
+BO_ 2565734400 AddressClaimed: 8 ECU
+ SG_ IdentityNumber : 0|21@1+ (1,0) [0|2097151] "" Vector__XXX
+ SG_ ManufacturerCode : 21|11@1+ (1,0) [0|2047] "" Vector__XXX
+ SG_ ECUInstance : 32|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ FunctionInstance : 35|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ Function : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ VehicleSystem : 49|7@1+ (1,0) [0|127] "" Vector__XXX
+ SG_ VehicleSystemInstance : 56|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ IndustryGroup : 60|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ ArbitraryAddressCapable : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2566834688 DM1_ActiveDTC: 8 ECU
+ SG_ MalfunctionIndicatorLamp : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ RedStopLamp : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ AmberWarningLamp : 4|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ProtectLamp : 6|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ SPN_LowByte : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SPN_MidByte : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ FMI : 32|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ SPN_HighBits : 37|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ OccurrenceCount : 40|7@1+ (1,0) [0|126] "" Vector__XXX
+
+BO_ 2566834944 DM2_PreviouslyActiveDTC: 8 ECU
+ SG_ MalfunctionIndicatorLamp : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ RedStopLamp : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ AmberWarningLamp : 4|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ProtectLamp : 6|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ SPN_LowByte : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ SPN_MidByte : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ FMI : 32|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ SPN_HighBits : 37|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ OccurrenceCount : 40|7@1+ (1,0) [0|126] "" Vector__XXX
+
+
+
+/* ================================================================
+   SECTION 2 - ECONIC PSM BODY-BUILDER CAN (GPM message set)
+   SA EB = PSM gateway (Truck->Body),  SA C9 = Heil body controller
+   Tap point: PSM A22 body interface connector, NOT the 9-pin DLC
+   Available from ECU prod month 10.2011; GPM1F from 10.2013
+   ================================================================ */
+
+BO_ 2365480939 GPM13_TruckToBody_1_3: 8 PSM
+ SG_ EngineTorqueMode : 0|4@1+ (1,0) [0|15] "" BODY
+ SG_ EngineControlAllowed : 4|2@1+ (1,0) [0|3] "" BODY
+ SG_ EngineRunning : 6|2@1+ (1,0) [0|3] "" BODY
+ SG_ DriversDemandEnginePctTorque : 8|8@1+ (1,-125) [-125|125] "%" BODY
+ SG_ ActualEnginePctTorque : 16|8@1+ (1,-125) [-125|125] "%" BODY
+ SG_ EngineSpeed : 24|16@1+ (0.125,0) [0|8031.875] "rpm" BODY
+ SG_ PercentLoadAtCurrentSpeed : 40|8@1+ (1,0) [0|125] "%" BODY
+ SG_ VehicleSpeed : 48|16@1+ (0.00390625,0) [0|250.996] "km/h" BODY
+
+BO_ 2566808043 GPM14_TruckToBody_1_4: 8 PSM
+ SG_ PercentClutchSlip : 0|8@1+ (0.4,0) [0|100] "%" BODY
+ SG_ CurrentGear : 8|8@1+ (1,-125) [-125|125] "gear" BODY
+ SG_ FirstClutchDepPTOFeedback : 16|2@1+ (1,0) [0|3] "" BODY
+ SG_ SecondClutchDepPTOFeedback : 18|2@1+ (1,0) [0|3] "" BODY
+ SG_ ClutchIndepPTOFeedback : 20|2@1+ (1,0) [0|3] "" BODY
+ SG_ FirstEngineMountedPTOFeedback : 22|2@1+ (1,0) [0|3] "" BODY
+ SG_ SecondEngineMountedPTOFeedback : 24|2@1+ (1,0) [0|3] "" BODY
+ SG_ PTOControlAllowed : 26|2@1+ (1,0) [0|3] "" BODY
+ SG_ TorqueConvOilTempWarning : 28|3@1+ (1,0) [0|7] "" BODY
+ SG_ TorqueConverterOilTemp : 32|16@1+ (0.03125,-273) [-273|1735] "degC" BODY
+ SG_ StarterActive : 48|2@1+ (1,0) [0|3] "" BODY
+ SG_ AccelPedalLowIdleSwitch : 50|2@1+ (1,0) [0|3] "" BODY
+ SG_ AccelPedalPosition : 56|8@1+ (0.4,0) [0|100] "%" BODY
+
+BO_ 2566809067 GPM16_TruckToBody_1_6: 8 PSM
+ SG_ AmbientAirTemperature : 0|16@1+ (0.03125,-273) [-273|1735] "degC" BODY
+
+BO_ 2498724075 GPM1F_TruckToBody: 8 PSM
+ SG_ ParkingBrake : 0|2@1+ (1,0) [0|3] "" BODY
+ SG_ ServiceBrake : 2|2@1+ (1,0) [0|3] "" BODY
+ SG_ ClutchCurrentState : 4|2@1+ (1,0) [0|3] "" BODY
+ SG_ AccelPedalKickdown : 6|2@1+ (1,0) [0|3] "" BODY
+ SG_ TransmissionSelectedGear : 8|8@1+ (1,-125) [-125|125] "gear" BODY
+ SG_ EnginePercentTorque : 16|8@1+ (1,-125) [-125|125] "%" BODY
+ SG_ NominalEngFrictionPctTorque : 24|8@1+ (1,-125) [-125|125] "%" BODY
+ SG_ ActualMaxAvailEngPctTorque : 32|8@1+ (1,-125) [-125|125] "%" BODY
+ SG_ BatteryVoltage : 48|16@1+ (0.05,0) [0|3276.75] "V" BODY
+
+BO_ 2365481161 GPM23_BodyToTruck_2_3: 8 BODY
+ SG_ RequestedEngineSpeed : 0|16@1+ (0.125,0) [0|8031.875] "rpm" PSM
+ SG_ ReqEngineSpeedUpperLimit : 16|16@1+ (0.125,0) [0|8031.875] "rpm" PSM
+ SG_ ReqEngineSpeedLowerLimit : 32|16@1+ (0.125,0) [0|8031.875] "rpm" PSM
+ SG_ ReqEngineTorqueLimit : 48|8@1+ (1,-125) [-125|125] "%" PSM
+ SG_ ReqVehicleSpeedLimit : 56|8@1+ (1,0) [0|250] "km/h" PSM
+
+BO_ 2498691529 GPM2S_BodyToTruck_Lighting: 8 BODY
+ SG_ BB2_1_Warnblinker_Rq : 32|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_2_Hupe_Rq : 34|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_3_Bremslicht_Rq : 36|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_4_Kl58_Rq : 38|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_5_NebelSchlussleuchte_Rq : 40|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_6_KL58und56_Rq : 42|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_7_SmZusatzLeuchtausfall_Rq : 44|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_8_SmZusatzBlinkerausfall_Rq : 46|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_9_FaltuerOeffnen_Rq : 48|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_10_RKL_Rq : 50|2@1+ (1,0) [0|3] "" PSM
+ SG_ BB2_11_FalttuerSchliessen_Rq : 52|2@1+ (1,0) [0|3] "" PSM
+
+
+
+/* ================================================================
+   SECTION 3 - ALLISON TCM PROPRIETARY (HYPOTHESIS - verify with shift sequence)
+   SA 03 -> SA 05 (shift console), PGN EF00 Proprietary-A
+   Bytes 7-8 carry range as ASCII chars (0x4E='N', 0x44='D', 0x52='R')
+   Confirmed in trace1: 4377 frames of 0A FC 00 01 23 01 4E 4E in neutral
+   ================================================================ */
+
+BO_ 2565801219 TCM_RangeDisplay_PropA: 8 TCM
+ SG_ RangeCharRequested : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ RangeCharCurrent : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2565866755 ETC2_TransGear_SA03: 8 TCM
+ SG_ TransActualGearRatio : 0|16@1+ (0.001,0) [0|64.255] "" Vector__XXX
+ SG_ TransCurrentRange : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ TransRequestedRange : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ TransOutputShaftSpeed : 32|16@1+ (0.125,0) [0|8031.875] "rpm" Vector__XXX
+
+
+
+
+/* === COMMENTS === */
+
+CM_ BO_ 2364539904 "[Powertrain] PGN 0xF004 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2364539648 "[Powertrain] PGN 0xF003 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566840064 "[Powertrain] PGN 0xFEDF - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566843904 "[Powertrain] PGN 0xFEEE - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566844160 "[Powertrain] PGN 0xFEEF - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566844928 "[Powertrain] PGN 0xFEF2 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566841600 "[Powertrain] PGN 0xFEE5 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566846720 "[Powertrain] PGN 0xFEF9 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566845696 "[Powertrain] PGN 0xFEF5 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566845952 "[Powertrain] PGN 0xFEF6 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566846208 "[Powertrain] PGN 0xFEF7 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2364540160 "[Transmission] PGN 0xF005 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566846464 "[Transmission] PGN 0xFEF8 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566844672 "[Chassis] PGN 0xFEF1 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2565865728 "[Chassis] PGN 0xF001 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566831872 "[Chassis] PGN 0xFEBF - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566847488 "[Cabin] PGN 0xFEFC - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566841856 "[Cabin] PGN 0xFEE6 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2565734400 "[NetworkMgmt] PGN 0xEE00 - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566834688 "[Diagnostics] PGN 0xFECA - SA assumed 0x00, edit to match your captured source address.";
+CM_ BO_ 2566834944 "[Diagnostics] PGN 0xFECB - SA assumed 0x00, edit to match your captured source address.";CM_ BO_ 2365480939 "ID 0x0CFE5FEB, PGN 0xFE5F, prio 3, SA 0xEB. Cycle 50ms +/-5ms. Daimler GPM 13, Truck->Body #1/3. THE message for the Heil interlock check: EngineSpeed + VehicleSpeed live here.";
+CM_ BO_ 2566808043 "ID 0x18FE61EB, PGN 0xFE61, prio 6, SA 0xEB. Cycle 100ms +/-10ms. Daimler GPM 14, Truck->Body #1/4. CurrentGear (neutral detection) lives here.";
+CM_ BO_ 2566809067 "ID 0x18FE65EB, PGN 0xFE65, prio 6, SA 0xEB. Cycle 1000ms +/-100ms. Daimler GPM 16, Truck->Body #1/6.";
+CM_ BO_ 2498724075 "ID 0x14EF80EB, PGN 0xEF00 Proprietary-A PDU1, DA 0x80, prio 5, SA 0xEB. Cycle 100ms. Daimler GPM 1F (available from prod month 10.2013). Brake states + battery voltage.";
+CM_ BO_ 2365481161 "ID 0x0CFE60C9, PGN 0xFE60, prio 3, SA 0xC9. Cycle 100ms. Daimler GPM 23, Body->Truck #2/3. Body requests engine speed / limits via PSM (throttle advance).";
+CM_ BO_ 2498691529 "ID 0x14EF01C9, PGN 0xEF00 Proprietary-A PDU1, DA 0x01, prio 5, SA 0xC9. Cycle 100ms. Daimler GPM 2S. Body lighting/horn/door requests. Bytes 1-4 and 8 not yet defined.";
+CM_ SG_ 2365480939 EngineSpeed "Actual engine speed from CPC. 0.125 rpm/bit, 0 offset. Idle ~600rpm = raw 0x12C0 (bytes appear on wire as C0 12). 0xFFFF = not available.";
+CM_ SG_ 2365480939 VehicleSpeed "From tailshaft speed or tachograph. 1/256 km/h per bit. 0xFFFF = not available.";
+CM_ SG_ 2365480939 DriversDemandEnginePctTorque "1%/bit, -125 offset (raw 125 = 0%).";
+CM_ SG_ 2566808043 CurrentGear "1 gear/bit, offset -125. Physical 0 = NEUTRAL (raw byte = 0x7D). Negative = reverse, positive = forward, 1 = crawler. Transitions during a shift are not indicated until target gear engaged.";
+CM_ SG_ 2566808043 PercentClutchSlip "Resolution not stated in Daimler excerpt; 0.4%/bit assumed per J1939 SPN 522 convention. VERIFY against live data.";
+CM_ SG_ 2566808043 AccelPedalPosition "Resolution not stated in Daimler excerpt; 0.4%/bit assumed per J1939 SPN 91 convention. VERIFY against live data.";
+CM_ SG_ 2566808043 TorqueConverterOilTemp "0.03125 degC/bit, -273 offset (SCA source). Allison trans temp for body use.";
+CM_ SG_ 2498724075 BatteryVoltage "Resolution not stated in Daimler excerpt; 0.05 V/bit assumed per J1939 SPN 168 convention. VERIFY: ~12.8V should read raw 256 = 0x0100.";
+CM_ SG_ 2498724075 ParkingBrake "CPC measured park brake state.";
+CM_ SG_ 2365481161 RequestedEngineSpeed "Body (Heil) requests a target engine speed, e.g. for PTO pack cycle. 0.125 rpm/bit.";
+CM_ SG_ 2365481161 ReqEngineTorqueLimit "Resolution not stated in excerpt; 1%/bit -125 offset assumed per J1939 convention.";
+CM_ SG_ 2365481161 ReqVehicleSpeedLimit "Resolution not stated in excerpt; 1 km/h/bit assumed. VERIFY.";
+
+CM_ BO_ 2565801219 "HYPOTHESIS: TCM->shift console proprietary. Bytes 7-8 ASCII range. Confirmed 0x4E=N in trace1 (4377 frames, stationary/neutral). Verify with shift sequence capture.";
+
+CM_ BO_ 2565866755 "ETC2 from SA 03 (Allison TCM). NOT seen broadcasting on Econic backbone - may be suppressed. Entry here for non-Econic trucks.";
+
+
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 60000;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "GenMsgCycleTime" 100;
+BA_DEF_DEF_  "BusType" "CAN";
+BA_ "GenMsgCycleTime" BO_ 2365480939 50;
+BA_ "GenMsgCycleTime" BO_ 2566808043 100;
+BA_ "GenMsgCycleTime" BO_ 2566809067 1000;
+BA_ "GenMsgCycleTime" BO_ 2498724075 100;
+BA_ "GenMsgCycleTime" BO_ 2365481161 100;
+BA_ "GenMsgCycleTime" BO_ 2498691529 100;
+BA_ "GenMsgCycleTime" BO_ 2364539904 10;
+BA_ "GenMsgCycleTime" BO_ 2364539648 50;
+BA_ "GenMsgCycleTime" BO_ 2566844672 100;
+
+VAL_ 2566808043 CurrentGear 122 "3rd_Reverse" 123 "2nd_Reverse" 124 "1st_Reverse" 125 "NEUTRAL" 126 "Crawler" 127 "1st_Forward" 128 "2nd_Forward" 129 "3rd_Forward" 130 "4th_Forward" 131 "5th_Forward" 132 "6th_Forward" 255 "NotAvailable" ;
+VAL_ 2566808043 TorqueConvOilTempWarning 0 "NoWarning" 1 "Prewarning" 2 "Warning" 7 "NotAvailable" ;
+VAL_ 2566808043 StarterActive 0 "NotActive" 1 "Active" 2 "Error" 3 "NotAvailable" ;
+VAL_ 2498724075 ParkingBrake 0 "NotActive" 1 "Active" 2 "NotDefined" 3 "SignalNotAvailable" ;
+VAL_ 2498724075 ServiceBrake 0 "NotPressed" 1 "Pressed" 2 "Error" 3 "SignalNotAvailable" ;
+VAL_ 2365480939 EngineRunning 0 "NotRunning" 1 "Running" 2 "Error" 3 "NotAvailable" ;
+VAL_ 2498691529 BB2_1_Warnblinker_Rq 0 "NoRequest" 1 "Request" 3 "NotAvailable" ;
+VAL_ 2565801219 RangeCharRequested 78 "N" 68 "D" 82 "R" 80 "P" 76 "L" ;
+VAL_ 2565801219 RangeCharCurrent   78 "N" 68 "D" 82 "R" 80 "P" 76 "L" ;

@@ -1,0 +1,188 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_: 
+BU_: ECU 
+BO_ 217056256 EEC1: 8 ECU
+   SG_ EngineTorqueMode : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+   SG_ DriversDemandPercentTorque : 8|8@1- (1,-125) [-125|125] "%" Vector__XXX
+   SG_ ActualEnginePercentTorque : 16|8@1- (1,-125) [-125|125] "%" Vector__XXX
+   SG_ EngineSpeed : 24|16@1+ (0.125,0) [0|8031.88] "rpm" Vector__XXX
+   SG_ SourceAddressOfCtrlDevice : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 217056000 EEC2: 8 ECU
+   SG_ AcceleratorPedalPos1 : 8|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+   SG_ EngineLoadAtCurrentSpeed : 16|8@1+ (1,0) [0|250] "%" Vector__XXX
+   SG_ AcceleratorPedalPos2 : 32|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 419356416 EEC3: 8 ECU
+   SG_ NominalFrictionPercentTorque : 0|8@1- (1,-125) [-125|125] "%" Vector__XXX
+   SG_ EstimatedEngineParasiticLoss : 8|8@1- (1,-125) [-125|125] "%" Vector__XXX
+   SG_ EngDesiredOperatingSpeed : 16|16@1+ (0.125,0) [0|8031.88] "rpm" Vector__XXX
+   SG_ EngDesiredOperatingSpdAsym : 32|8@1+ (0.125,0) [0|31.875] "%" Vector__XXX
+
+BO_ 419360256 ET1: 8 ECU
+   SG_ EngineCoolantTemp : 0|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+   SG_ FuelTemp : 8|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+   SG_ EngineOilTemp1 : 16|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+   SG_ TurboOilTemp : 32|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+   SG_ EngineIntercoolerTemp : 48|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+
+BO_ 419360512 EFLP1: 8 ECU
+   SG_ FuelDeliveryPressure : 0|8@1+ (4,0) [0|1000] "kPa" Vector__XXX
+   SG_ ExtCrankcaseBlowByPressure : 8|8@1+ (0.5,0) [0|125] "kPa" Vector__XXX
+   SG_ EngineOilLevel : 16|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+   SG_ EngineOilPressure : 24|8@1+ (4,0) [0|1000] "kPa" Vector__XXX
+   SG_ EngineCrankcasePressure : 32|16@1- (0.0078125,-250) [-250|251] "kPa" Vector__XXX
+   SG_ EngineCoolantPressure : 48|8@1+ (2,0) [0|500] "kPa" Vector__XXX
+   SG_ EngineCoolantLevel : 56|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 419361280 LFE: 8 ECU
+   SG_ EngineFuelRate : 0|16@1+ (0.05,0) [0|3212.75] "L/h" Vector__XXX
+   SG_ EngineInstantaneousFuelEconomy : 16|16@1+ (0.00195313,0) [0|125.5] "km/L" Vector__XXX
+   SG_ EngineAvgFuelEconomy : 32|16@1+ (0.00195313,0) [0|125.5] "km/L" Vector__XXX
+   SG_ EngineThrottleValve1Pos : 48|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 419357952 EngineHoursRevolutions: 8 ECU
+   SG_ EngineTotalHoursOfOperation : 0|32@1+ (0.05,0) [0|2.10554e+08] "hr" Vector__XXX
+   SG_ EngineTotalRevolutions : 32|32@1+ (1000,0) [0|4.21108e+12] "r" Vector__XXX
+
+BO_ 419363072 LFC: 8 ECU
+   SG_ EngineTripFuel : 0|32@1+ (0.5,0) [0|2.10554e+09] "L" Vector__XXX
+   SG_ EngineTotalFuelUsed : 32|32@1+ (0.5,0) [0|2.10554e+09] "L" Vector__XXX
+
+BO_ 419362048 AMB: 8 ECU
+   SG_ BarometricPressure : 0|8@1+ (0.5,0) [0|125] "kPa" Vector__XXX
+   SG_ CabInteriorTemp : 8|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+   SG_ AmbientAirTemp : 24|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+   SG_ AirInletTemp : 40|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+   SG_ RoadSurfaceTemp : 48|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+
+BO_ 419362304 IC1: 8 ECU
+   SG_ BoostPressure : 8|8@1+ (2,0) [0|500] "kPa" Vector__XXX
+   SG_ IntakeManifoldTemp : 16|8@1+ (1,-40) [-40|210] "degC" Vector__XXX
+   SG_ AirInletPressure : 24|8@1+ (2,0) [0|500] "kPa" Vector__XXX
+   SG_ AirFilterDiffPressure : 32|8@1+ (0.05,0) [0|12.5] "kPa" Vector__XXX
+   SG_ ExhaustGasTemp : 40|16@1+ (0.03125,-273) [-273|1735] "degC" Vector__XXX
+   SG_ CoolantFilterDiffPressure : 56|8@1+ (0.5,0) [0|125] "kPa" Vector__XXX
+
+BO_ 419362560 VEP1: 8 ECU
+   SG_ NetBatteryCurrent : 0|8@1- (1,-125) [-125|125] "A" Vector__XXX
+   SG_ AlternatorCurrent : 8|8@1+ (1,0) [0|250] "A" Vector__XXX
+   SG_ ChargingSystemPotential : 16|16@1+ (0.05,0) [0|3212.75] "V" Vector__XXX
+   SG_ BatteryPotentialSwitched : 32|16@1+ (0.05,0) [0|3212.75] "V" Vector__XXX
+
+BO_ 217056512 ETC1: 8 ECU
+   SG_ TransDrivelineEngaged : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ TransCurrentGear : 24|8@1- (1,-125) [-125|125] "" Vector__XXX
+   SG_ TransSelectedGear : 56|8@1- (1,-125) [-125|125] "" Vector__XXX
+
+BO_ 419362816 ETC2: 8 ECU
+   SG_ TransActualGearRatio : 0|16@1+ (0.001,0) [0|64.255] "" Vector__XXX
+   SG_ TransCurrentRange : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+   SG_ TransRequestedRange : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+   SG_ TransOutputShaftSpeed : 32|16@1+ (0.125,0) [0|8031.88] "rpm" Vector__XXX
+
+BO_ 419361024 CCVS: 8 ECU
+   SG_ WheelBasedVehicleSpeed : 8|16@1+ (0.00390625,0) [0|250.996] "km/h" Vector__XXX
+   SG_ CruiseControlSetSpeed : 32|8@1+ (1,0) [0|250] "km/h" Vector__XXX
+   SG_ ParkingBrakeSwitch : 55|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 418382080 EBC1: 8 ECU
+   SG_ ABSActive : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ ASRBrakeControlActive : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ ASREngineControlActive : 4|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ BrakePedalPosition : 8|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+   SG_ ABSOffroadSwitch : 16|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ ABSWarningLamp : 24|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 419348224 EBC2: 8 ECU
+   SG_ FrontAxleSpeed : 0|16@1+ (0.00390625,0) [0|250.996] "km/h" Vector__XXX
+   SG_ RelSpeedFrontAxleRight : 16|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+   SG_ RelSpeedFrontAxleLeft : 24|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+   SG_ RelSpeedRearAxle1Right : 32|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+   SG_ RelSpeedRearAxle1Left : 40|8@1- (0.0625,-7.9375) [-7.9375|7.9375] "km/h" Vector__XXX
+
+BO_ 419363840 DD: 8 ECU
+   SG_ WasherFluidLevel : 48|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+   SG_ FuelLevel1 : 56|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 419358208 TimeDate: 8 ECU
+   SG_ Seconds : 0|8@1+ (0.25,0) [0|62.75] "s" Vector__XXX
+   SG_ Minutes : 8|8@1+ (1,0) [0|60] "min" Vector__XXX
+   SG_ Hours : 16|8@1+ (1,0) [0|23] "hr" Vector__XXX
+   SG_ Month : 24|8@1+ (1,0) [1|12] "" Vector__XXX
+   SG_ Day : 32|8@1+ (0.25,0) [0|63.75] "" Vector__XXX
+   SG_ Year : 40|8@1+ (1,1985) [1985|2235] "" Vector__XXX
+
+BO_ 418250752 AddressClaimed: 8 ECU
+   SG_ IdentityNumber : 0|21@1+ (1,0) [0|2.09715e+06] "" Vector__XXX
+   SG_ ManufacturerCode : 21|11@1+ (1,0) [0|2047] "" Vector__XXX
+   SG_ ECUInstance : 32|3@1+ (1,0) [0|7] "" Vector__XXX
+   SG_ FunctionInstance : 35|5@1+ (1,0) [0|31] "" Vector__XXX
+   SG_ Function : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+   SG_ VehicleSystem : 49|7@1+ (1,0) [0|127] "" Vector__XXX
+   SG_ VehicleSystemInstance : 56|4@1+ (1,0) [0|15] "" Vector__XXX
+   SG_ IndustryGroup : 60|3@1+ (1,0) [0|7] "" Vector__XXX
+   SG_ ArbitraryAddressCapable : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 419351040 DM1_ActiveDTC: 8 ECU
+   SG_ MalfunctionIndicatorLamp : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ RedStopLamp : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ AmberWarningLamp : 4|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ ProtectLamp : 6|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ SPN_LowByte : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+   SG_ SPN_MidByte : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+   SG_ FMI : 32|5@1+ (1,0) [0|31] "" Vector__XXX
+   SG_ SPN_HighBits : 37|3@1+ (1,0) [0|7] "" Vector__XXX
+   SG_ OccurrenceCount : 40|7@1+ (1,0) [0|126] "" Vector__XXX
+
+BO_ 419351296 DM2_PreviouslyActiveDTC: 8 ECU
+   SG_ MalfunctionIndicatorLamp : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ RedStopLamp : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ AmberWarningLamp : 4|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ ProtectLamp : 6|2@1+ (1,0) [0|3] "" Vector__XXX
+   SG_ SPN_LowByte : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+   SG_ SPN_MidByte : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+   SG_ FMI : 32|5@1+ (1,0) [0|31] "" Vector__XXX
+   SG_ SPN_HighBits : 37|3@1+ (1,0) [0|7] "" Vector__XXX
+   SG_ OccurrenceCount : 40|7@1+ (1,0) [0|126] "" Vector__XXX
+
+BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
+BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "labelfilters" INT 0 0;
+BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
+BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
+BA_DEF_DEF_ "matchingcriteria" 1;
+BA_DEF_DEF_ "labelfilters" 1;
