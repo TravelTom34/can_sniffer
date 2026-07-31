@@ -1,0 +1,126 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_: 
+BU_: PSM BODY 
+BO_ 2365480939 GPM13_TruckToBody_1_3: 8 PSM
+   SG_ EngineTorqueMode : 0|4@1+ (1,0) [0|15] "" BODY
+   SG_ EngineControlAllowed : 4|2@1+ (1,0) [0|3] "" BODY
+   SG_ EngineRunning : 6|2@1+ (1,0) [0|3] "" BODY
+   SG_ DriversDemandEnginePctTorque : 8|8@1+ (1,-125) [-125|125] "%" BODY
+   SG_ ActualEnginePctTorque : 16|8@1+ (1,-125) [-125|125] "%" BODY
+   SG_ EngineSpeed : 24|16@1+ (0.125,0) [0|8031.88] "rpm" BODY
+   SG_ PercentLoadAtCurrentSpeed : 40|8@1+ (1,0) [0|125] "%" BODY
+   SG_ VehicleSpeed : 48|16@1+ (0.00390625,0) [0|250.996] "km/h" BODY
+
+BO_ 2566808043 GPM14_TruckToBody_1_4: 8 PSM
+   SG_ PercentClutchSlip : 0|8@1+ (0.4,0) [0|100] "%" BODY
+   SG_ CurrentGear : 8|8@1+ (1,-125) [-125|125] "gear" BODY
+   SG_ FirstClutchDepPTOFeedback : 16|2@1+ (1,0) [0|3] "" BODY
+   SG_ SecondClutchDepPTOFeedback : 18|2@1+ (1,0) [0|3] "" BODY
+   SG_ ClutchIndepPTOFeedback : 20|2@1+ (1,0) [0|3] "" BODY
+   SG_ FirstEngineMountedPTOFeedback : 22|2@1+ (1,0) [0|3] "" BODY
+   SG_ SecondEngineMountedPTOFeedback : 24|2@1+ (1,0) [0|3] "" BODY
+   SG_ PTOControlAllowed : 26|2@1+ (1,0) [0|3] "" BODY
+   SG_ TorqueConvOilTempWarning : 28|3@1+ (1,0) [0|7] "" BODY
+   SG_ TorqueConverterOilTemp : 32|16@1+ (0.03125,-273) [-273|1735] "degC" BODY
+   SG_ StarterActive : 48|2@1+ (1,0) [0|3] "" BODY
+   SG_ AccelPedalLowIdleSwitch : 50|2@1+ (1,0) [0|3] "" BODY
+   SG_ AccelPedalPosition : 56|8@1+ (0.4,0) [0|100] "%" BODY
+
+BO_ 2566809067 GPM16_TruckToBody_1_6: 8 PSM
+   SG_ AmbientAirTemperature : 0|16@1+ (0.03125,-273) [-273|1735] "degC" BODY
+
+BO_ 2498724075 GPM1F_TruckToBody: 8 PSM
+   SG_ ParkingBrake : 0|2@1+ (1,0) [0|3] "" BODY
+   SG_ ServiceBrake : 2|2@1+ (1,0) [0|3] "" BODY
+   SG_ ClutchCurrentState : 4|2@1+ (1,0) [0|3] "" BODY
+   SG_ AccelPedalKickdown : 6|2@1+ (1,0) [0|3] "" BODY
+   SG_ TransmissionSelectedGear : 8|8@1+ (1,-125) [-125|125] "gear" BODY
+   SG_ EnginePercentTorque : 16|8@1+ (1,-125) [-125|125] "%" BODY
+   SG_ NominalEngFrictionPctTorque : 24|8@1+ (1,-125) [-125|125] "%" BODY
+   SG_ ActualMaxAvailEngPctTorque : 32|8@1+ (1,-125) [-125|125] "%" BODY
+   SG_ BatteryVoltage : 48|16@1+ (0.05,0) [0|3276.75] "V" BODY
+
+BO_ 2365481161 GPM23_BodyToTruck_2_3: 8 BODY
+   SG_ RequestedEngineSpeed : 0|16@1+ (0.125,0) [0|8031.88] "rpm" PSM
+   SG_ ReqEngineSpeedUpperLimit : 16|16@1+ (0.125,0) [0|8031.88] "rpm" PSM
+   SG_ ReqEngineSpeedLowerLimit : 32|16@1+ (0.125,0) [0|8031.88] "rpm" PSM
+   SG_ ReqEngineTorqueLimit : 48|8@1+ (1,-125) [-125|125] "%" PSM
+   SG_ ReqVehicleSpeedLimit : 56|8@1+ (1,0) [0|250] "km/h" PSM
+
+BO_ 2498691529 GPM2S_BodyToTruck_Lighting: 8 BODY
+   SG_ BB2_1_Warnblinker_Rq : 32|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_2_Hupe_Rq : 34|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_3_Bremslicht_Rq : 36|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_4_Kl58_Rq : 38|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_5_NebelSchlussleuchte_Rq : 40|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_6_KL58und56_Rq : 42|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_7_SmZusatzLeuchtausfall_Rq : 44|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_8_SmZusatzBlinkerausfall_Rq : 46|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_9_FaltuerOeffnen_Rq : 48|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_10_RKL_Rq : 50|2@1+ (1,0) [0|3] "" PSM
+   SG_ BB2_11_FalttuerSchliessen_Rq : 52|2@1+ (1,0) [0|3] "" PSM
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 60000;
+BA_DEF_ "BusType" STRING ;
+BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
+BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
+BA_DEF_ BO_ "labelfilters" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_ "GenMsgCycleTime" BO_ 2365480939 50;
+BA_ "GenMsgCycleTime" BO_ 2566808043 100;
+BA_ "GenMsgCycleTime" BO_ 2566809067 1000;
+BA_ "GenMsgCycleTime" BO_ 2498724075 100;
+BA_ "GenMsgCycleTime" BO_ 2365481161 100;
+BA_ "GenMsgCycleTime" BO_ 2498691529 100;
+BA_DEF_DEF_ "GenMsgCycleTime" 100;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
+BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
+BA_DEF_DEF_ "labelfilters" 1;
+BA_DEF_DEF_ "matchingcriteria" 1;
+BA_DEF_DEF_ "filterlabeling" true;
+CM_ BU_ PSM "Parameterizable Special Module A22 - Daimler body builder gateway, source address 0xEB. All Truck-to-Body GPM messages originate here.";
+CM_ BU_ BODY "Body controller (Heil side loader), source address 0xC9. Sends GPM23 (throttle/limit requests) and GPM2S (lighting requests).";
+VAL_ 2365480939 EngineControlAllowed 0 "NotAllowed" 1 "Allowed" 2 "Error" 3 "NotAvailable";
+VAL_ 2365480939 EngineRunning 0 "NotRunning" 1 "Running" 2 "Error" 3 "NotAvailable";
+VAL_ 2566808043 CurrentGear 122 "3rd_Reverse" 123 "2nd_Reverse" 124 "1st_Reverse" 125 "NEUTRAL" 126 "Crawler" 127 "1st_Forward" 128 "2nd_Forward" 129 "3rd_Forward" 130 "4th_Forward" 131 "5th_Forward" 132 "6th_Forward" 255 "NotAvailable";
+VAL_ 2566808043 PTOControlAllowed 0 "NotAllowed" 1 "Allowed" 2 "Error" 3 "NotAvailable";
+VAL_ 2566808043 TorqueConvOilTempWarning 0 "NoWarning" 1 "Prewarning" 2 "Warning" 7 "NotAvailable";
+VAL_ 2566808043 StarterActive 0 "NotActive" 1 "Active" 2 "Error" 3 "NotAvailable";
+VAL_ 2498724075 ParkingBrake 0 "NotActive" 1 "Active" 2 "NotDefined" 3 "SignalNotAvailable";
+VAL_ 2498724075 ServiceBrake 0 "NotPressed" 1 "Pressed" 2 "Error" 3 "SignalNotAvailable";
+VAL_ 2498691529 BB2_1_Warnblinker_Rq 0 "NoRequest" 1 "Request" 3 "NotAvailable";
+VAL_ 2498691529 BB2_10_RKL_Rq 0 "NoRequest" 1 "Request" 3 "NotAvailable";
