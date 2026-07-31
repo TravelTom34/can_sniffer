@@ -1,9 +1,6 @@
-# M2 BHM CAN Sniffer — Full Setup & Troubleshooting Guide
+# CAN Sniffer — Full Setup & Troubleshooting Guide
 
-Project: Arduino Uno R4 WiFi + MCP2515/TJA1050 CAN interface, sniffing a
-Freightliner M2 Bulkhead Module (BHM) on the bench. This document covers
-everything done to get from "boards on the desk" to "reliable frame capture,"
-including every dead end, so it doesn't have to be rediscovered.
+Project: Arduino Uno R4 WiFi + MCP2515/TJA1050 CAN interface, sniffing CAN frames from any Bus
 
 ---
 
